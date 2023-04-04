@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:verifarma/domain/video_repository_imp.dart';
 
 import '../domain/video_model.dart';

@@ -3,18 +3,29 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:provider/provider.dart';
+import 'package:verifarma/data/user_loggin_repository.dart';
 import 'package:verifarma/data/video_repository.dart';
-import 'package:verifarma/domain/providers.dart';
+import 'package:verifarma/domain/providers/user_provider.dart';
+import 'package:verifarma/domain/providers/videos_provider.dart';
 import 'package:verifarma/domain/video_model.dart';
+import 'package:verifarma/presentation/auth_screen.dart';
 
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import 'dart:developer' as dev;
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => VideosProvider(VideoRepository())),
+        ChangeNotifierProvider(create: (_) => UserProvider(UserLogginRepository()))
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -23,13 +34,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => VideosProvider(VideoRepository()),
-      child: const MaterialApp(
-        title: 'Flutter Demo',
-        home: VideoList(),
-      ),
+    return const MaterialApp(
+      title: 'Flutter Demo',
+      home: ViofarmaApp(),
     );
+  }
+}
+
+class ViofarmaApp extends StatelessWidget {
+  const ViofarmaApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AuthScreen();
   }
 }
 
@@ -199,18 +216,15 @@ class _SubmitVideoState extends State<SubmitVideo> {
 }
 
 class CustomTexField extends StatelessWidget {
-  const CustomTexField({
-    super.key,
-    required this.hint,
-    required this.validator,
-  });
+  const CustomTexField({super.key, required this.hint, required this.validator, this.isInLoggin = false});
   final String hint;
+  final bool isInLoggin;
 
   final String? Function(String?) validator;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: InputDecoration(hintText: "$hint del video", contentPadding: EdgeInsets.all(8)),
+      decoration: InputDecoration(hintText: isInLoggin ? hint : "$hint del video", contentPadding: EdgeInsets.all(8)),
       validator: validator,
     );
   }
@@ -304,7 +318,9 @@ class RecomendedVideos extends StatelessWidget {
       width: 320,
       child: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 24),
             const Text("Videos Recomendados"),
             ...recomendedVideos.map(
               (video) => Column(
@@ -314,6 +330,17 @@ class RecomendedVideos extends StatelessWidget {
                 ],
               ),
             ),
+            Visibility(
+                visible: recomendedVideos.isEmpty,
+                child: Column(
+                  children: const [
+                    SizedBox(height: 84),
+                    Center(
+                      child: Text(
+                          "Lo sentimos, en este momento no encontramos recomendaciones para los videos que votaste"),
+                    ),
+                  ],
+                ))
           ],
         ),
       ),
@@ -357,9 +384,10 @@ class RatingScale extends StatelessWidget {
         CustomContainer(
             onTap: () async {
               provider.setVideo(video, true);
-              await Future.delayed(const Duration(seconds: 1));
+
               if (provider.showRecomendation) {
                 await showCustomDialog(context);
+                video.currenteRankingPoint = 0;
               }
             },
             height: 24,

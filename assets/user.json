@@ -1,0 +1,26 @@
+[
+    {
+        "Nombre": "Leo",
+        "Apellido": "Messi",
+        "Username": "el10",
+        "Password": "123456789",
+        "NickName": "lapulga",
+        "Active": true
+    },
+    {
+        "Nombre": "Mona",
+        "Apellido": "Jimenez",
+        "Username": "LaMona",
+        "Password": "123456789",
+        "NickName": "CMJ",
+        "Active": true
+    },
+    {
+        "Nombre": "Moria",
+        "Apellido": "Casan",
+        "Username": "Morita",
+        "Password": "123456789",
+        "NickName": "MoriaC",
+        "Active": true
+    }
+]
