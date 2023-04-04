@@ -13,6 +13,8 @@ class Video {
     required this.description,
     required this.url,
     required this.stars,
+    this.controller,
+    this.currenteRankingPoint = 0,
   });
 
   final int id;
@@ -25,10 +27,13 @@ class Video {
 
   double get rating {
     int totalPoints = 0;
-    for (var star in stars) {
-      totalPoints += star.starValue;
+    if (stars.isNotEmpty) {
+      for (var star in stars) {
+        totalPoints += star.starValue;
+      }
+      return totalPoints / stars.length;
     }
-    return totalPoints / stars.length;
+    return 0;
   }
 
   int get roundedStarRating => rating.round().clamp(0, 5);
@@ -41,18 +46,21 @@ class Video {
         stars: [],
       );
 
-  Video copyWith({
-    int? id,
-    String? title,
-    String? description,
-    String? url,
-    List<Star>? stars,
-  }) =>
+  Video copyWith(
+          {int? id,
+          String? title,
+          String? description,
+          String? url,
+          List<Star>? stars,
+          YoutubePlayerController? controller,
+          int currenteRankingPoint = 0}) =>
       Video(
         id: id ?? this.id,
         title: title ?? this.title,
         description: description ?? this.description,
         url: url ?? this.url,
+        controller: controller ?? this.controller,
+        currenteRankingPoint: currenteRankingPoint,
         stars: stars ?? this.stars,
       );
 

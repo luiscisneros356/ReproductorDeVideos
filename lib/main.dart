@@ -1,6 +1,9 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:verifarma/data/video_repository.dart';
 import 'package:verifarma/domain/providers.dart';
@@ -38,13 +41,13 @@ class VideoList extends StatefulWidget {
 }
 
 class _VideoListState extends State<VideoList> {
-  List<Video> _listVideos = [];
   late ScrollController _controller;
+
   @override
   void initState() {
     _controller = ScrollController()..addListener(_listener);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      initVideos();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // initVideos();
     });
 
     super.initState();
@@ -57,42 +60,158 @@ class _VideoListState extends State<VideoList> {
     if (pixel >= maxScrollExtent) {
       dev.log("LLEGOO");
 
-      initVideos(true);
+      //  initVideos(true);
     }
   }
 
-  Future<void> initVideos([bool addMore = false]) async {
-    final provider = Provider.of<VideosProvider>(context, listen: false);
+  // Future<void> initVideos([bool addMore = false]) async {
+  //   final provider = Provider.of<VideosProvider>(context, listen: false);
 
-    _listVideos = await provider.fetchVideos();
-    dev.log("${_listVideos.length}");
-    if (addMore) {
-      final moreVideos = await provider.fetchVideos();
-      _listVideos.addAll([...moreVideos]);
-      setState(() {});
+  //   _listVideos = await provider.fetchVideos();
+  //   dev.log("${_listVideos.length}");
+  //   if (addMore) {
+  //     final moreVideos = await provider.fetchVideos();
+  //     _listVideos.addAll([...moreVideos]);
+  //     setState(() {});
 
-      dev.log("${_listVideos.length}");
-    }
+  //     dev.log("${_listVideos.length}");
+  //   }
 
-    _listVideos.forEach((video) {
-      video.controller = YoutubePlayerController(
-          initialVideoId: YoutubePlayer.convertUrlToId(video.url)!,
-          flags: const YoutubePlayerFlags(
-            autoPlay: false,
-          ));
-    });
-
-    if (mounted) setState(() {});
-  }
+  //   if (mounted) setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
+    print("Build VideoList");
+    final provider = Provider.of<VideosProvider>(context, listen: false);
     return Scaffold(
       drawer: const RecomendedVideos(),
       appBar: AppBar(
         title: const Text('Lista de Videos'),
       ),
-      body: ListViewVideos(controller: _controller, listVideos: _listVideos),
+      body: FutureBuilder<List<Video>>(
+          future: provider.fetchVideos(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            }
+            if (snapshot.data != null) {
+              final videos = snapshot.data;
+              return ListViewVideos(controller: _controller, listVideos: videos!);
+            }
+            return Container(height: 100, width: 100, color: Colors.red);
+          }),
+      floatingActionButton: FloatingActionButton(onPressed: () async {
+        final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
+
+        if (video != null) {
+          provider.setAddNewVideo(video);
+          setState(() {});
+        }
+      }),
+    );
+  }
+}
+
+class SubmitVideo extends StatefulWidget {
+  const SubmitVideo({
+    super.key,
+  });
+
+  @override
+  State<SubmitVideo> createState() => _SubmitVideoState();
+}
+
+class _SubmitVideoState extends State<SubmitVideo> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? title;
+  String? description;
+  String? url;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(50),
+        child: Container(
+          height: 300,
+          width: 500,
+          color: Colors.white,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                CustomTexField(
+                  hint: "Nombre",
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      title = value;
+                      return null;
+                    }
+                    return "Campo vacio";
+                  },
+                ),
+                CustomTexField(
+                  hint: "Descripción",
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      description = value;
+                      return null;
+                    }
+                    return "Campo vacio";
+                  },
+                ),
+                CustomTexField(
+                  hint: "URL",
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty && value.contains("https://www.youtube.com")) {
+                      url = value;
+                      return null;
+                    }
+                    return "Campo vacio o dirección no válida";
+                  },
+                ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        _formKey.currentState?.save();
+
+                        if (_formKey.currentState?.validate() ?? false) {
+                          Video video = Video.empty();
+                          Navigator.pop(context, video.copyWith(title: title, description: description, url: url));
+                        }
+                      },
+                      child: Text("Subir video")),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomTexField extends StatelessWidget {
+  const CustomTexField({
+    super.key,
+    required this.hint,
+    required this.validator,
+  });
+  final String hint;
+
+  final String? Function(String?) validator;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(hintText: "$hint del video", contentPadding: EdgeInsets.all(8)),
+      validator: validator,
     );
   }
 }
@@ -110,6 +229,8 @@ class ListViewVideos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Build ListView");
+
     return ListView.separated(
       controller: _controller,
       itemBuilder: (context, index) {
@@ -124,15 +245,15 @@ class ListViewVideos extends StatelessWidget {
 }
 
 class CustomVideoPlayer extends StatelessWidget {
-  const CustomVideoPlayer({
-    super.key,
-    required this.video,
-  });
+  const CustomVideoPlayer({super.key, required this.video, this.visible = true});
 
   final Video video;
+  final bool visible;
 
   @override
   Widget build(BuildContext context) {
+    print("Build VIdeoPlayer");
+
     return Column(
       children: [
         YoutubePlayer(
@@ -159,7 +280,7 @@ class CustomVideoPlayer extends StatelessWidget {
                     ...List.generate(video.roundedStarRating, (index) => StarsRating(tapRating: true)),
                   ],
                 ),
-                RatingScale(video: video)
+                Visibility(visible: visible, child: RatingScale(video: video))
               ],
             ),
           ],
@@ -176,6 +297,8 @@ class RecomendedVideos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Build REcomendados");
+
     final recomendedVideos = Provider.of<VideosProvider>(context).recomendedVideos;
     return Drawer(
       width: 320,
@@ -183,7 +306,14 @@ class RecomendedVideos extends StatelessWidget {
         child: Column(
           children: [
             const Text("Videos Recomendados"),
-            ...recomendedVideos.map((video) => CustomVideoPlayer(video: video))
+            ...recomendedVideos.map(
+              (video) => Column(
+                children: [
+                  CustomVideoPlayer(video: video, visible: false),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
           ],
         ),
       ),
