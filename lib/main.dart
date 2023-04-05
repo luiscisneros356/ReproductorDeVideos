@@ -352,7 +352,7 @@ class _RatingScaleState extends State<RatingScale> {
             children: [
               Row(
                 children: [
-                  ...List.generate(widget.video.roundedStarRating, (index) => StarsRating(tapRating: true)),
+                  ...List.generate(widget.video.roundedStarRating, (index) => const StarsRating()),
                 ],
               ),
               Visibility(
@@ -484,23 +484,12 @@ class IconRating extends StatelessWidget {
   }
 }
 
-class StarsRating extends StatefulWidget {
-  StarsRating({super.key, this.tapRating = false});
-  bool tapRating;
-  @override
-  State<StarsRating> createState() => _StarsRatingState();
-}
+class StarsRating extends StatelessWidget {
+  const StarsRating({super.key});
 
-class _StarsRatingState extends State<StarsRating> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        widget.tapRating = !widget.tapRating;
-        setState(() {});
-      },
-      child: widget.tapRating ? const Icon(Icons.star) : const Icon(Icons.star_border),
-    );
+    return const Icon(Icons.star, color: Colors.orange);
   }
 }
 
