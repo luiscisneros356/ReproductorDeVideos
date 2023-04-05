@@ -42,9 +42,16 @@ class VideosProvider extends ChangeNotifier {
     _selectedVideo = video;
 
     if (rate) {
-      _selectedVideo.stars.add(Star(id: 0, starValue: _selectedVideo.currenteRankingPoint));
+      dev.log("${_selectedVideo.rating} ");
 
-      print(_listVideos.length);
+      dev.log("${_selectedVideo.currenteRankingPoint} ");
+
+      _selectedVideo.stars.add(Star(id: 0, starValue: _selectedVideo.currenteRankingPoint));
+//TODO: al hacer hot restar cambia el rating y las estrellas
+
+      dev.log("${_selectedVideo.rating} ");
+
+      dev.log("${_selectedVideo.currenteRankingPoint} ");
 
       if (showRecomendation) {
         recomended();
@@ -56,7 +63,7 @@ class VideosProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  recomended() {
+  void recomended() {
     _recomendedVideos = _listVideos.where((video) => video.title.contains(_selectedVideo.title)).toList();
     _recomendedVideos.sort((a, b) => b.rating.compareTo(a.rating));
   }

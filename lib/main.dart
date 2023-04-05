@@ -99,10 +99,12 @@ class _VideoListState extends State<VideoList> {
   Widget build(BuildContext context) {
     final provider = Provider.of<VideosProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    print("LISTVIDEOS");
     return Scaffold(
       drawer: const RecomendedVideos(),
       appBar: AppBar(
-        title: const Text('Lista de Videos'),
+        title: const Text('Videos'),
         actions: [
           Visibility(
             visible: !userProvider.isAnonymousUser,
@@ -127,7 +129,7 @@ class _VideoListState extends State<VideoList> {
             return const SizedBox();
           }),
       floatingActionButton: Visibility(
-        visible: userProvider.isAnonymousUser,
+        visible: !userProvider.isAnonymousUser,
         child: FloatingActionButton(onPressed: () async {
           final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
 
@@ -199,7 +201,7 @@ class _SubmitVideoState extends State<SubmitVideo> {
                       url = value;
                       return null;
                     }
-                    return "Campo vacio o dirección no válida";
+                    return "URL no válida";
                   },
                 ),
                 const Spacer(),
@@ -293,7 +295,7 @@ class CustomVideoPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Build VIdeoPlayer");
+    final provider = Provider.of<VideosProvider>(context, listen: false);
 
     return Column(
       children: [
@@ -310,119 +312,91 @@ class CustomVideoPlayer extends StatelessWidget {
             FullScreenButton(),
           ],
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(video.title.toUpperCase()),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    ...List.generate(video.roundedStarRating, (index) => StarsRating(tapRating: true)),
-                  ],
-                ),
-                Visibility(visible: visible, child: RatingScale(video: video))
-              ],
-            ),
-          ],
-        )
+        GestureDetector(
+            onTap: () {
+              dev.log("${video.id}");
+            },
+            child: Visibility(visible: visible, child: RatingScale(video: video)))
       ],
     );
   }
 }
 
-class RecomendedVideos extends StatelessWidget {
-  const RecomendedVideos({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    print("Build REcomendados");
-
-    final recomendedVideos = Provider.of<VideosProvider>(context).recomendedVideos;
-    return Drawer(
-      width: 320,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 24),
-            const Text("Videos Recomendados"),
-            ...recomendedVideos.map(
-              (video) => Column(
-                children: [
-                  CustomVideoPlayer(video: video, visible: false),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
-            Visibility(
-                visible: recomendedVideos.isEmpty,
-                child: Column(
-                  children: const [
-                    SizedBox(height: 84),
-                    Center(
-                      child: Text(
-                          "Lo sentimos, en este momento no encontramos recomendaciones para los videos que votaste"),
-                    ),
-                  ],
-                ))
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class RatingScale extends StatelessWidget {
+class RatingScale extends StatefulWidget {
   const RatingScale({super.key, required this.video});
 
   final Video video;
 
   @override
+  State<RatingScale> createState() => _RatingScaleState();
+}
+
+class _RatingScaleState extends State<RatingScale> {
+  @override
   Widget build(BuildContext context) {
     final provider = Provider.of<VideosProvider>(context);
+    //TODO: ver por que hay que hacer hot reload
+    print("RATINGSCALE");
+    return Container(
+      color: Colors.greenAccent,
+      child: Column(
+        //  crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 34),
+          Text(widget.video.title.toUpperCase()),
+          const SizedBox(height: 12),
+          Column(
+            children: [
+              Row(
+                children: [
+                  ...List.generate(widget.video.roundedStarRating, (index) => StarsRating(tapRating: true)),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomContainer(height: 24, width: 48, text: "${widget.video.currenteRankingPoint}", onTap: () {}),
+                  const SizedBox(width: 24),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconRating(
+                        onTap: () {
+                          provider.setVideo(widget.video);
+                          provider.incrementRanking();
+                        },
+                        icon: Icons.arrow_drop_up_outlined,
+                      ),
+                      IconRating(
+                          onTap: () {
+                            provider.setVideo(widget.video);
+                            provider.decrementRanking();
+                          },
+                          icon: Icons.arrow_drop_down)
+                    ],
+                  ),
+                  const SizedBox(width: 24),
+                  CustomContainer(
+                      onTap: () async {
+                        provider.setVideo(widget.video, true);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CustomContainer(height: 24, width: 48, text: "${video.currenteRankingPoint}", onTap: () {}),
-        const SizedBox(width: 24),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconRating(
-              onTap: () {
-                provider.setVideo(video);
-                provider.incrementRanking();
-              },
-              icon: Icons.arrow_drop_up_outlined,
-            ),
-            IconRating(
-                onTap: () {
-                  provider.setVideo(video);
-                  provider.decrementRanking();
-                },
-                icon: Icons.arrow_drop_down)
-          ],
-        ),
-        const SizedBox(width: 24),
-        CustomContainer(
-            onTap: () async {
-              provider.setVideo(video, true);
-
-              if (provider.showRecomendation) {
-                await showCustomDialog(context);
-                video.currenteRankingPoint = 0;
-              }
-            },
-            height: 24,
-            width: 60,
-            text: "RATE",
-            color: Colors.white,
-            backgroundColor: Colors.orange)
-      ],
+                        if (provider.showRecomendation) {
+                          await showCustomDialog(context);
+                        }
+                        widget.video.currenteRankingPoint = 0;
+                        setState(() {});
+                      },
+                      height: 24,
+                      width: 60,
+                      text: "RATE",
+                      color: Colors.white,
+                      backgroundColor: Colors.orange)
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -515,6 +489,50 @@ class _StarsRatingState extends State<StarsRating> {
         setState(() {});
       },
       child: widget.tapRating ? Icon(Icons.star) : Icon(Icons.star_border),
+    );
+  }
+}
+
+class RecomendedVideos extends StatelessWidget {
+  const RecomendedVideos({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    print("Build REcomendados");
+
+    final recomendedVideos = Provider.of<VideosProvider>(context).recomendedVideos;
+    return Drawer(
+      width: 320,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 24),
+            const Text("Videos Recomendados"),
+            ...recomendedVideos.map(
+              (video) => Column(
+                children: [
+                  CustomVideoPlayer(video: video, visible: false),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+            Visibility(
+                visible: recomendedVideos.isEmpty,
+                child: Column(
+                  children: const [
+                    SizedBox(height: 84),
+                    Center(
+                      child: Text(
+                          "Lo sentimos, en este momento no encontramos recomendaciones para los videos que votaste"),
+                    ),
+                  ],
+                ))
+          ],
+        ),
+      ),
     );
   }
 }
