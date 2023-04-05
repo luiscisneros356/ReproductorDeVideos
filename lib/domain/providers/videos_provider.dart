@@ -64,8 +64,11 @@ class VideosProvider extends ChangeNotifier {
   }
 
   void recomended() {
-    _recomendedVideos = _listVideos.where((video) => video.title.contains(_selectedVideo.title)).toList();
+    _recomendedVideos = _listVideos
+        .where((video) => video.title.contains(_selectedVideo.title) || video.rating >= _selectedVideo.rating)
+        .toList();
     _recomendedVideos.sort((a, b) => b.rating.compareTo(a.rating));
+    _recomendedVideos = _recomendedVideos.getRange(0, 5).toList();
   }
 
   Future<List<Video>> fetchVideos() async {

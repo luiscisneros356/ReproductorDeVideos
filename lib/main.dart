@@ -7,6 +7,7 @@ import 'package:verifarma/domain/providers/user_provider.dart';
 import 'package:verifarma/domain/providers/videos_provider.dart';
 import 'package:verifarma/domain/video_model.dart';
 import 'package:verifarma/presentation/auth_screen.dart';
+import 'package:verifarma/presentation/utils/text_style.dart';
 
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -42,7 +43,7 @@ class ViofarmaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return VideoList();
+    return AuthScreen();
   }
 }
 
@@ -272,14 +273,12 @@ class ListViewVideos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Build ListView");
-
     return ListView.separated(
       controller: _controller,
       itemBuilder: (context, index) {
         final video = _listVideos[index];
 
-        return CustomVideoPlayer(video: video);
+        return CustomVideoPlayer(video: video, visible: true);
       },
       itemCount: _listVideos.length,
       separatorBuilder: (context, _) => const SizedBox(height: 50.0),
@@ -288,15 +287,13 @@ class ListViewVideos extends StatelessWidget {
 }
 
 class CustomVideoPlayer extends StatelessWidget {
-  const CustomVideoPlayer({super.key, required this.video, this.visible = true});
+  const CustomVideoPlayer({super.key, required this.video, required this.visible});
 
   final Video video;
   final bool visible;
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<VideosProvider>(context, listen: false);
-
     return Column(
       children: [
         YoutubePlayer(
@@ -312,20 +309,17 @@ class CustomVideoPlayer extends StatelessWidget {
             FullScreenButton(),
           ],
         ),
-        GestureDetector(
-            onTap: () {
-              dev.log("${video.id}");
-            },
-            child: Visibility(visible: visible, child: RatingScale(video: video)))
+        RatingScale(video: video, visible: visible)
       ],
     );
   }
 }
 
 class RatingScale extends StatefulWidget {
-  const RatingScale({super.key, required this.video});
+  const RatingScale({super.key, required this.video, required this.visible});
 
   final Video video;
+  final bool visible;
 
   @override
   State<RatingScale> createState() => _RatingScaleState();
@@ -335,15 +329,19 @@ class _RatingScaleState extends State<RatingScale> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<VideosProvider>(context);
-    //TODO: ver por que hay que hacer hot reload
-    print("RATINGSCALE");
+
     return Container(
       color: Colors.greenAccent,
+      padding: EdgeInsets.all(12),
       child: Column(
-        //  crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 34),
-          Text(widget.video.title.toUpperCase()),
+          Text(
+            widget.video.title.toUpperCase(),
+            style: VioFarmaStyle.title(color: Colors.black, isBold: true),
+          ),
+          const SizedBox(height: 12),
+          Text(widget.video.description, style: VioFarmaStyle.subTitle()),
           const SizedBox(height: 12),
           Column(
             children: [
@@ -352,46 +350,49 @@ class _RatingScaleState extends State<RatingScale> {
                   ...List.generate(widget.video.roundedStarRating, (index) => StarsRating(tapRating: true)),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CustomContainer(height: 24, width: 48, text: "${widget.video.currenteRankingPoint}", onTap: () {}),
-                  const SizedBox(width: 24),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconRating(
-                        onTap: () {
-                          provider.setVideo(widget.video);
-                          provider.incrementRanking();
-                        },
-                        icon: Icons.arrow_drop_up_outlined,
-                      ),
-                      IconRating(
+              Visibility(
+                visible: widget.visible,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomContainer(height: 24, width: 48, text: "${widget.video.currenteRankingPoint}", onTap: () {}),
+                    const SizedBox(width: 24),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconRating(
                           onTap: () {
                             provider.setVideo(widget.video);
-                            provider.decrementRanking();
+                            provider.incrementRanking();
                           },
-                          icon: Icons.arrow_drop_down)
-                    ],
-                  ),
-                  const SizedBox(width: 24),
-                  CustomContainer(
-                      onTap: () async {
-                        provider.setVideo(widget.video, true);
+                          icon: Icons.arrow_drop_up_outlined,
+                        ),
+                        IconRating(
+                            onTap: () {
+                              provider.setVideo(widget.video);
+                              provider.decrementRanking();
+                            },
+                            icon: Icons.arrow_drop_down)
+                      ],
+                    ),
+                    const SizedBox(width: 24),
+                    CustomContainer(
+                        onTap: () async {
+                          provider.setVideo(widget.video, true);
 
-                        if (provider.showRecomendation) {
-                          await showCustomDialog(context);
-                        }
-                        widget.video.currenteRankingPoint = 0;
-                        setState(() {});
-                      },
-                      height: 24,
-                      width: 60,
-                      text: "RATE",
-                      color: Colors.white,
-                      backgroundColor: Colors.orange)
-                ],
+                          if (provider.showRecomendation) {
+                            await showCustomDialog(context);
+                          }
+                          widget.video.currenteRankingPoint = 0;
+                          setState(() {});
+                        },
+                        height: 24,
+                        width: 60,
+                        text: "RATE",
+                        color: Colors.white,
+                        backgroundColor: Colors.orange)
+                  ],
+                ),
               ),
             ],
           ),
@@ -405,7 +406,10 @@ Future<void> showCustomDialog(BuildContext context) async {
   await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-            title: Text("Deseas ver mas videos recomendados para a vos"),
+            title: Text(
+              "Deseas ver mas videos recomendados para a vos",
+              style: VioFarmaStyle.title(),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -500,8 +504,6 @@ class RecomendedVideos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Build REcomendados");
-
     final recomendedVideos = Provider.of<VideosProvider>(context).recomendedVideos;
     return Drawer(
       width: 320,
@@ -509,8 +511,12 @@ class RecomendedVideos extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 24),
-            const Text("Videos Recomendados"),
+            Container(
+                width: double.infinity,
+                height: 50,
+                color: Colors.red,
+                alignment: Alignment.center,
+                child: Text("Videos Recomendados", style: VioFarmaStyle.title(color: Colors.white))),
             ...recomendedVideos.map(
               (video) => Column(
                 children: [

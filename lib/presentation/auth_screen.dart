@@ -15,7 +15,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String username = "";
   String password = "";
-  bool obscureText = false;
+  bool obscureText = true;
 
   @override
   void initState() {
