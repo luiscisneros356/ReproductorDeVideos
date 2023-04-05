@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -13,7 +15,7 @@ class VideoList extends StatefulWidget {
   const VideoList({super.key});
 
   @override
-  _VideoListState createState() => _VideoListState();
+  State<VideoList> createState() => _VideoListState();
 }
 
 class _VideoListState extends State<VideoList> {

@@ -5,6 +5,7 @@ import '../../utils/text_style.dart';
 Future<void> showCustomDialog(BuildContext context) async {
   await showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => AlertDialog(
             title: Text(
               "Deseas ver mas videos recomendados para a vos",

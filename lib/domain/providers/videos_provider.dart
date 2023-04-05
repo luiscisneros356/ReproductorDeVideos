@@ -4,7 +4,7 @@ import 'package:verifarma/data/local_storage.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'dart:developer' as dev;
 
-import '../impl/video_repository_imp.dart';
+import '../impl/impl.dart';
 import '../models/models.dart';
 
 class VideosProvider extends ChangeNotifier {
@@ -50,6 +50,24 @@ class VideosProvider extends ChangeNotifier {
       dev.log("${_selectedVideo.currenteRankingPoint} ");
 
       _selectedVideo.stars.add(Star(id: 0, starValue: _selectedVideo.currenteRankingPoint));
+
+//TODO ver aca
+
+      if (Boxes.videosDataBase.values.contains(_selectedVideo)) {
+        final videoInDataBase = Boxes.videosDataBase.values.firstWhere((video) => video.title == _selectedVideo.title);
+
+        dev.log("**********************************");
+        dev.log("${videoInDataBase.rating} ");
+
+        print(videoInDataBase.title);
+
+        videoInDataBase.stars.add(Star(id: 0, starValue: _selectedVideo.currenteRankingPoint));
+
+        Boxes.raitingVideo(videoInDataBase);
+
+        dev.log("${videoInDataBase.rating} ");
+        dev.log("**********************************");
+      }
 
       dev.log("${_selectedVideo.rating} ");
 

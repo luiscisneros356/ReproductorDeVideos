@@ -4,7 +4,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 part 'video.g.dart';
 
 @HiveType(typeId: 2)
-class Video {
+class Video extends HiveObject {
   Video({
     required this.id,
     required this.title,
@@ -24,9 +24,8 @@ class Video {
   String url;
   @HiveField(4)
   final List<Star> stars;
-  @HiveField(5)
   YoutubePlayerController? controller;
-  @HiveField(6)
+
   int currenteRankingPoint = 0;
 
   double get rating {
@@ -85,6 +84,7 @@ class Video {
       };
 }
 
+@HiveType(typeId: 4)
 class Star {
   Star({
     required this.id,
@@ -92,6 +92,7 @@ class Star {
   });
 
   final int id;
+  @HiveField(1)
   final int starValue;
 
   Star copyWith({
