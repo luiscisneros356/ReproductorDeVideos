@@ -4,11 +4,11 @@
         "Apellido": "Messi",
         "Username": "el10",
         "Password": "123456789",
-        "NickName": "lapulga",
+        "NickName": "Pulga",
         "Active": true
     },
     {
-        "Nombre": "Mona",
+        "Nombre": "Carlos",
         "Apellido": "Jimenez",
         "Username": "LaMona",
         "Password": "123456789",
@@ -20,7 +20,7 @@
         "Apellido": "Casan",
         "Username": "Morita",
         "Password": "123456789",
-        "NickName": "MoriaC",
+        "NickName": "MoCa",
         "Active": true
     }
 ]

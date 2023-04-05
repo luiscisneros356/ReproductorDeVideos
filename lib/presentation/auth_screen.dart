@@ -15,11 +15,14 @@ class _AuthScreenState extends State<AuthScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String username = "";
   String password = "";
+  bool obscureText = false;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) async {
-      Provider.of<UserProvider>(context, listen: false).fetchUsers();
+      if (mounted) {
+        Provider.of<UserProvider>(context, listen: false).fetchUsers();
+      }
     });
     super.initState();
   }
@@ -71,6 +74,12 @@ class _AuthScreenState extends State<AuthScreen> {
                           },
                         ),
                         CustomTexField(
+                          obscureText: obscureText,
+                          showIcon: true,
+                          onTap: () {
+                            obscureText = !obscureText;
+                            setState(() {});
+                          },
                           isInLoggin: true,
                           hint: "Password",
                           validator: (value) {
@@ -87,24 +96,30 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(height: 50),
                   ElevatedButton(
                       onPressed: () {
-                        // final route = MaterialPageRoute(builder: (context) => VideoList());
-                        // Navigator.push(context, route);
-
                         _formKey.currentState?.save();
                         if (_formKey.currentState?.validate() ?? false) {
-                          print(username);
-                          print(password);
                           final isUserAllow = userLoggin.checkUserLoggin(username: username, password: password);
 
                           if (isUserAllow) {
-                            print("NAVEGAR");
+                            userLoggin.setCurrentUser(username: username, password: password);
+
+                            final route = MaterialPageRoute(builder: (context) => const VideoList());
+                            Navigator.pushReplacement(context, route);
                           } else {
-                            print("NO PERMITIDO");
+                            final userError = userLoggin.checkUserError(username: username, password: password);
+                            FocusScope.of(context).unfocus();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(userError)));
                           }
                         }
                       },
                       child: Text("Ingresar como usuario")),
-                  ElevatedButton(onPressed: () {}, child: Text("Ingresar como invitado")),
+                  ElevatedButton(
+                      onPressed: () {
+                        userLoggin.setAnonymousUser();
+                        final route = MaterialPageRoute(builder: (context) => const VideoList());
+                        Navigator.pushReplacement(context, route);
+                      },
+                      child: Text("Ingresar como invitado")),
                 ],
               ),
             ),

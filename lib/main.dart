@@ -1,7 +1,3 @@
-// ignore_for_file: must_be_immutable
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -31,10 +27,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       home: ViofarmaApp(),
     );
@@ -99,12 +95,20 @@ class _VideoListState extends State<VideoList> {
 
   @override
   Widget build(BuildContext context) {
-    print("Build VideoList");
     final provider = Provider.of<VideosProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       drawer: const RecomendedVideos(),
       appBar: AppBar(
         title: const Text('Lista de Videos'),
+        actions: [
+          Visibility(
+            visible: !userProvider.isAnonymousUser,
+            child: CircleAvatar(
+              child: Text(userProvider.userNickname()),
+            ),
+          )
+        ],
       ),
       body: FutureBuilder<List<Video>>(
           future: provider.fetchVideos(),
@@ -120,14 +124,17 @@ class _VideoListState extends State<VideoList> {
             }
             return Container(height: 100, width: 100, color: Colors.red);
           }),
-      floatingActionButton: FloatingActionButton(onPressed: () async {
-        final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
+      floatingActionButton: Visibility(
+        visible: !userProvider.isAnonymousUser,
+        child: FloatingActionButton(onPressed: () async {
+          final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
 
-        if (video != null) {
-          provider.setAddNewVideo(video);
-          setState(() {});
-        }
-      }),
+          if (video != null) {
+            provider.setAddNewVideo(video);
+            setState(() {});
+          }
+        }),
+      ),
     );
   }
 }
@@ -216,15 +223,32 @@ class _SubmitVideoState extends State<SubmitVideo> {
 }
 
 class CustomTexField extends StatelessWidget {
-  const CustomTexField({super.key, required this.hint, required this.validator, this.isInLoggin = false});
+  const CustomTexField(
+      {super.key,
+      required this.hint,
+      required this.validator,
+      this.isInLoggin = false,
+      this.showIcon = false,
+      this.obscureText = false,
+      this.onTap});
   final String hint;
   final bool isInLoggin;
+  final bool showIcon;
+  final bool obscureText;
+  final VoidCallback? onTap;
 
   final String? Function(String?) validator;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: InputDecoration(hintText: isInLoggin ? hint : "$hint del video", contentPadding: EdgeInsets.all(8)),
+      obscureText: obscureText,
+      decoration: InputDecoration(
+          hintText: isInLoggin ? hint : "$hint del video",
+          contentPadding: const EdgeInsets.all(8),
+          suffixIcon: IconButton(
+            onPressed: onTap,
+            icon: showIcon ? Icon(Icons.remove_red_eye) : Icon(Icons.abc, size: 1),
+          )),
       validator: validator,
     );
   }
