@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:verifarma/domain/providers/user_provider.dart';
-import 'package:verifarma/main.dart';
+import '../../domain/providers/user_provider.dart';
+import '../home/widgets/custom_textfield.dart';
+import '../home/widgets/video_list.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});

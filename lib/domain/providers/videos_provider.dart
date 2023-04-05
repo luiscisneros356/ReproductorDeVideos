@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:verifarma/domain/video_model.dart';
-import 'package:verifarma/domain/video_repository_imp.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'dart:developer' as dev;
+
+import '../impl/video_repository_imp.dart';
+import '../models/models.dart';
 
 class VideosProvider extends ChangeNotifier {
   VideosProvider(this._videoRepositoryImpl);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:verifarma/domain/user_loggin_impl.dart';
 
-import '../user_model.dart';
+import '../impl/user_loggin_impl.dart';
+import '../models/models.dart';
 
 class UserProvider extends ChangeNotifier {
   UserProvider(this._userLogginImp);

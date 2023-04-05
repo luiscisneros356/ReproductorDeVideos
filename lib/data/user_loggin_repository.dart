@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:verifarma/domain/user_loggin_impl.dart';
-import 'package:verifarma/domain/user_model.dart';
+import 'package:verifarma/domain/impl/user_loggin_impl.dart';
+
+import '../domain/models/models.dart';
 
 const userDataJson = "assets/user.json";
 
