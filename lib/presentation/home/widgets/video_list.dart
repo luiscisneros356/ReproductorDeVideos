@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:verifarma/data/local_storage.dart';
 import 'dart:developer' as dev;
 
 import '../../../domain/models/models.dart';
@@ -20,10 +22,6 @@ class _VideoListState extends State<VideoList> {
   @override
   void initState() {
     _controller = ScrollController()..addListener(_listener);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      // initVideos();
-    });
-
     super.initState();
   }
 
@@ -32,29 +30,10 @@ class _VideoListState extends State<VideoList> {
     final maxScrollExtent = position.maxScrollExtent;
     final pixel = position.pixels + 40;
     if (pixel >= maxScrollExtent) {
-      dev.log("LLEGOO");
       Provider.of<VideosProvider>(context, listen: false).fetchVideos();
       setState(() {});
-
-      //  initVideos(true);
     }
   }
-
-  // Future<void> initVideos([bool addMore = false]) async {
-  //   final provider = Provider.of<VideosProvider>(context, listen: false);
-
-  //   _listVideos = await provider.fetchVideos();
-  //   dev.log("${_listVideos.length}");
-  //   if (addMore) {
-  //     final moreVideos = await provider.fetchVideos();
-  //     _listVideos.addAll([...moreVideos]);
-  //     setState(() {});
-
-  //     dev.log("${_listVideos.length}");
-  //   }
-
-  //   if (mounted) setState(() {});
-  // }
 
   @override
   Widget build(BuildContext context) {

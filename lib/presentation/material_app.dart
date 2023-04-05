@@ -10,13 +10,13 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: ViofarmaApp(),
+      home: VerifarmaApp(),
     );
   }
 }
 
-class ViofarmaApp extends StatelessWidget {
-  const ViofarmaApp({super.key});
+class VerifarmaApp extends StatelessWidget {
+  const VerifarmaApp({super.key});
 
   @override
   Widget build(BuildContext context) {

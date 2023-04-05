@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:verifarma/domain/impl/user_loggin_impl.dart';
 
-import '../domain/models/models.dart';
+import '../domain/models/user.dart';
 
 const userDataJson = "assets/user.json";
 

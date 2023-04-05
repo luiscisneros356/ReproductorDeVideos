@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 import 'package:provider/provider.dart';
+import 'package:verifarma/data/local_storage.dart';
 
 import 'data/repository.dart';
 import 'domain/providers/providers.dart';
 import 'presentation/material_app.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Boxes.initData();
   runApp(
     MultiProvider(
       providers: [

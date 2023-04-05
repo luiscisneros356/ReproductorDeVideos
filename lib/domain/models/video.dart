@@ -1,11 +1,9 @@
-import 'dart:convert';
-
+import 'package:hive/hive.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-Video videoFromJson(String str) => Video.fromJson(json.decode(str));
+part 'video.g.dart';
 
-String videoToJson(Video data) => json.encode(data.toJson());
-
+@HiveType(typeId: 2)
 class Video {
   Video({
     required this.id,
@@ -16,13 +14,19 @@ class Video {
     this.controller,
     this.currenteRankingPoint = 0,
   });
-
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String title;
+  @HiveField(2)
   final String description;
+  @HiveField(3)
   String url;
+  @HiveField(4)
   final List<Star> stars;
+  @HiveField(5)
   YoutubePlayerController? controller;
+  @HiveField(6)
   int currenteRankingPoint = 0;
 
   double get rating {

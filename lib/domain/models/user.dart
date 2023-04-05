@@ -1,9 +1,8 @@
-import 'dart:convert';
+import 'package:hive/hive.dart';
 
-User userFromJson(String str) => User.fromJson(json.decode(str));
+part 'user.g.dart';
 
-String userToJson(User data) => json.encode(data.toJson());
-
+@HiveType(typeId: 3)
 class User {
   User({
     required this.nombre,
@@ -13,12 +12,17 @@ class User {
     required this.nickName,
     required this.active,
   });
-
+  @HiveField(1)
   String nombre;
+  @HiveField(2)
   String apellido;
+  @HiveField(3)
   String username;
+  @HiveField(4)
   String password;
+  @HiveField(5)
   String nickName;
+  @HiveField(6)
   bool active;
 
   User copyWith({

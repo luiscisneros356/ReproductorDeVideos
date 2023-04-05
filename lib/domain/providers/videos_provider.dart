@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:verifarma/data/local_storage.dart';
 
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'dart:developer' as dev;
@@ -22,6 +23,7 @@ class VideosProvider extends ChangeNotifier {
 
   void setAddNewVideo(Video video) {
     _listNewVideos.add(video);
+    Boxes.addNewVideo(video);
   }
 
   Video _selectedVideo = Video.empty();
@@ -48,7 +50,6 @@ class VideosProvider extends ChangeNotifier {
       dev.log("${_selectedVideo.currenteRankingPoint} ");
 
       _selectedVideo.stars.add(Star(id: 0, starValue: _selectedVideo.currenteRankingPoint));
-//TODO: al hacer hot restar cambia el rating y las estrellas
 
       dev.log("${_selectedVideo.rating} ");
 
@@ -67,20 +68,24 @@ class VideosProvider extends ChangeNotifier {
   void recomended() {
     _recomendedVideos = _listVideos.where((video) => video.title.contains(_selectedVideo.title)).toList();
     _recomendedVideos.sort((a, b) => b.rating.compareTo(a.rating));
+    //TODO ER ESTO
     _recomendedVideos = _recomendedVideos.getRange(0, 5).toList();
   }
 
   Future<List<Video>> fetchVideos() async {
     final templistVideos = await _videoRepositoryImpl.getVideos();
-    dev.log("${_listVideos.length} ");
+
     _listVideos.addAll(templistVideos);
-    dev.log("${_listVideos.length} ");
+
+    if (Boxes.videosDataBase.isNotEmpty) {
+      _listVideos.addAll(Boxes.videosDataBase.values.toList());
+      _listVideos = _listVideos.reversed.toList();
+      dev.log("PASO POR ACA");
+    }
 
     if (_listNewVideos.isNotEmpty) {
       _listVideos.addAll(_listNewVideos);
       _listVideos = _listVideos.reversed.toList();
-
-      dev.log("${_listVideos.first.description}");
     }
 
     for (var video in _listVideos) {
