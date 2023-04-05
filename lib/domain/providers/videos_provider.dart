@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:verifarma/domain/video_model.dart';
 import 'package:verifarma/domain/video_repository_imp.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'dart:developer' as dev;
 
 class VideosProvider extends ChangeNotifier {
   VideosProvider(this._videoRepositoryImpl);
@@ -61,11 +62,16 @@ class VideosProvider extends ChangeNotifier {
   }
 
   Future<List<Video>> fetchVideos() async {
-    _listVideos = await _videoRepositoryImpl.getVideos();
+    final templistVideos = await _videoRepositoryImpl.getVideos();
+    dev.log("${_listVideos.length} ");
+    _listVideos.addAll(templistVideos);
+    dev.log("${_listVideos.length} ");
 
     if (_listNewVideos.isNotEmpty) {
       _listVideos.addAll(_listNewVideos);
       _listVideos = _listVideos.reversed.toList();
+
+      print(_listVideos.first.description);
     }
 
     for (var video in _listVideos) {

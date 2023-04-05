@@ -42,7 +42,7 @@ class ViofarmaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuthScreen();
+    return VideoList();
   }
 }
 
@@ -72,6 +72,8 @@ class _VideoListState extends State<VideoList> {
     final pixel = position.pixels + 40;
     if (pixel >= maxScrollExtent) {
       dev.log("LLEGOO");
+      Provider.of<VideosProvider>(context, listen: false).fetchVideos();
+      setState(() {});
 
       //  initVideos(true);
     }
@@ -122,15 +124,16 @@ class _VideoListState extends State<VideoList> {
               final videos = snapshot.data;
               return ListViewVideos(controller: _controller, listVideos: videos!);
             }
-            return Container(height: 100, width: 100, color: Colors.red);
+            return const SizedBox();
           }),
       floatingActionButton: Visibility(
-        visible: !userProvider.isAnonymousUser,
+        visible: userProvider.isAnonymousUser,
         child: FloatingActionButton(onPressed: () async {
           final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
 
           if (video != null) {
             provider.setAddNewVideo(video);
+            dev.log("${provider.listNewVideos.length} ");
             setState(() {});
           }
         }),
