@@ -64,9 +64,7 @@ class VideosProvider extends ChangeNotifier {
   }
 
   void recomended() {
-    _recomendedVideos = _listVideos
-        .where((video) => video.title.contains(_selectedVideo.title) || video.rating >= _selectedVideo.rating)
-        .toList();
+    _recomendedVideos = _listVideos.where((video) => video.title.contains(_selectedVideo.title)).toList();
     _recomendedVideos.sort((a, b) => b.rating.compareTo(a.rating));
     _recomendedVideos = _recomendedVideos.getRange(0, 5).toList();
   }
@@ -81,7 +79,7 @@ class VideosProvider extends ChangeNotifier {
       _listVideos.addAll(_listNewVideos);
       _listVideos = _listVideos.reversed.toList();
 
-      print(_listVideos.first.description);
+      dev.log("${_listVideos.first.description}");
     }
 
     for (var video in _listVideos) {

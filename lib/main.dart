@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -43,7 +45,7 @@ class ViofarmaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuthScreen();
+    return const AuthScreen();
   }
 }
 
@@ -101,7 +103,6 @@ class _VideoListState extends State<VideoList> {
     final provider = Provider.of<VideosProvider>(context, listen: false);
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    print("LISTVIDEOS");
     return Scaffold(
       drawer: const RecomendedVideos(),
       appBar: AppBar(
@@ -110,6 +111,7 @@ class _VideoListState extends State<VideoList> {
           Visibility(
             visible: !userProvider.isAnonymousUser,
             child: CircleAvatar(
+              backgroundColor: Colors.red,
               child: Text(userProvider.userNickname()),
             ),
           )
@@ -131,15 +133,18 @@ class _VideoListState extends State<VideoList> {
           }),
       floatingActionButton: Visibility(
         visible: !userProvider.isAnonymousUser,
-        child: FloatingActionButton(onPressed: () async {
-          final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
+        child: FloatingActionButton.extended(
+            icon: const Icon(Icons.video_call),
+            label: Text("Subir video", style: VioFarmaStyle.title()),
+            onPressed: () async {
+              final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
 
-          if (video != null) {
-            provider.setAddNewVideo(video);
-            dev.log("${provider.listNewVideos.length} ");
-            setState(() {});
-          }
-        }),
+              if (video != null) {
+                provider.setAddNewVideo(video);
+                dev.log("${provider.listNewVideos.length} ");
+                setState(() {});
+              }
+            }),
       ),
     );
   }
@@ -217,7 +222,7 @@ class _SubmitVideoState extends State<SubmitVideo> {
                           Navigator.pop(context, video.copyWith(title: title, description: description, url: url));
                         }
                       },
-                      child: Text("Subir video")),
+                      child: const Text("Subir video")),
                 )
               ],
             ),
@@ -253,7 +258,7 @@ class CustomTexField extends StatelessWidget {
           contentPadding: const EdgeInsets.all(8),
           suffixIcon: IconButton(
             onPressed: onTap,
-            icon: showIcon ? Icon(Icons.remove_red_eye) : Icon(Icons.abc, size: 1),
+            icon: showIcon ? const Icon(Icons.remove_red_eye) : const Icon(Icons.abc, size: 1),
           )),
       validator: validator,
     );
@@ -332,7 +337,7 @@ class _RatingScaleState extends State<RatingScale> {
 
     return Container(
       color: Colors.greenAccent,
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -413,14 +418,14 @@ Future<void> showCustomDialog(BuildContext context) async {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("NO"),
+                child: const Text("NO"),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   Scaffold.of(context).openDrawer();
                 },
-                child: Text("SI"),
+                child: const Text("SI"),
               ),
             ],
           ));
@@ -452,7 +457,9 @@ class CustomContainer extends StatelessWidget {
         width: width,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: backgroundColor, borderRadius: BorderRadius.all(Radius.circular(6)), border: Border.all(width: 1)),
+            color: backgroundColor,
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
+            border: Border.all(width: 1)),
         child: Text(
           text,
           style: TextStyle(color: color),
@@ -492,7 +499,7 @@ class _StarsRatingState extends State<StarsRating> {
         widget.tapRating = !widget.tapRating;
         setState(() {});
       },
-      child: widget.tapRating ? Icon(Icons.star) : Icon(Icons.star_border),
+      child: widget.tapRating ? const Icon(Icons.star) : const Icon(Icons.star_border),
     );
   }
 }

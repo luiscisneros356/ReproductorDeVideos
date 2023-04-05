@@ -112,14 +112,14 @@ class _AuthScreenState extends State<AuthScreen> {
                           }
                         }
                       },
-                      child: Text("Ingresar como usuario")),
+                      child: const Text("Ingresar como usuario")),
                   ElevatedButton(
                       onPressed: () {
                         userLoggin.setAnonymousUser();
                         final route = MaterialPageRoute(builder: (context) => const VideoList());
                         Navigator.pushReplacement(context, route);
                       },
-                      child: Text("Ingresar como invitado")),
+                      child: const Text("Ingresar como invitado")),
                 ],
               ),
             ),
