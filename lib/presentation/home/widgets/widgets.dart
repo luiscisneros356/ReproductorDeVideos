@@ -10,7 +10,7 @@ export 'package:verifarma/presentation/home/widgets/rating_scale.dart';
 
 export 'package:verifarma/presentation/home/widgets/custom_video_player.dart';
 
-export 'package:verifarma/presentation/home/widgets/listView_videos.dart';
+export 'package:verifarma/presentation/home/widgets/list_view_videos.dart';
 
 export 'package:verifarma/presentation/home/widgets/recomended_videos.dart';
 
