@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:verifarma/presentation/routes/routes.dart';
 
 import '../../domain/providers/user_provider.dart';
 import '../home/widgets/custom_textfield.dart';
@@ -104,8 +105,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           if (isUserAllow) {
                             userLoggin.setCurrentUser(username: username, password: password);
 
-                            final route = MaterialPageRoute(builder: (context) => const VideoList());
-                            Navigator.pushReplacement(context, route);
+                            Navigator.pushReplacementNamed(context, RoutesApp.home);
                           } else {
                             final userError = userLoggin.checkUserError(username: username, password: password);
                             FocusScope.of(context).unfocus();
@@ -117,8 +117,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   ElevatedButton(
                       onPressed: () {
                         userLoggin.setAnonymousUser();
-                        final route = MaterialPageRoute(builder: (context) => const VideoList());
-                        Navigator.pushReplacement(context, route);
+                        Navigator.pushReplacementNamed(context, RoutesApp.home);
                       },
                       child: const Text("Ingresar como invitado")),
                 ],

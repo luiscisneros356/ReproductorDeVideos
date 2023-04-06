@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:verifarma/presentation/routes/routes.dart';
+import 'package:verifarma/presentation/splash/splash_screen.dart';
 
 import 'auth/auth_screen.dart';
 
@@ -7,10 +9,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: VerifarmaApp(),
+      home: const VerifarmaApp(),
+      routes: RoutesApp.getRoutes(),
     );
   }
 }
@@ -20,6 +23,6 @@ class VerifarmaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AuthScreen();
+    return const Splash();
   }
 }

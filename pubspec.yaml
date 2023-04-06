@@ -72,6 +72,7 @@ flutter:
   assets:
    - assets/data.json
    - assets/user.json
+   - assets/splash.png
    
 
   # An image asset can refer to one or more resolution-specific "variants", see

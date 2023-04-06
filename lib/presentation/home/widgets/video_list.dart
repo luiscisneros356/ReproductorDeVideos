@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:verifarma/presentation/routes/routes.dart';
 
 import 'dart:developer' as dev;
 
@@ -72,18 +71,32 @@ class _VideoListState extends State<VideoList> {
           }),
       floatingActionButton: Visibility(
         visible: !userProvider.isAnonymousUser,
-        child: FloatingActionButton.extended(
-            icon: const Icon(Icons.video_call),
-            label: Text("Subir video", style: VioFarmaStyle.title()),
-            onPressed: () async {
-              final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            CustomFAB(
+              icon: Icons.close_rounded,
+              text: "Cerrar sesión",
+              onPressed: () {
+                userProvider.deletedUser();
+                Navigator.pushReplacementNamed(context, RoutesApp.splash);
+              },
+            ),
+            const SizedBox(height: 24),
+            CustomFAB(
+                icon: Icons.video_call,
+                text: "Subir video",
+                onPressed: () async {
+                  final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
 
-              if (video != null) {
-                provider.setAddNewVideo(video);
-                dev.log("${provider.listNewVideos.length} ");
-                setState(() {});
-              }
-            }),
+                  if (video != null) {
+                    provider.setAddNewVideo(video);
+                    dev.log("${provider.listNewVideos.length} ");
+                    setState(() {});
+                  }
+                })
+          ],
+        ),
       ),
     );
   }

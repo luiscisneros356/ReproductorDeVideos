@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:verifarma/data/local_storage.dart';
 
 import '../impl/user_loggin_impl.dart';
 import '../models/models.dart';
@@ -14,6 +15,9 @@ class UserProvider extends ChangeNotifier {
   User _currentUser = User.empty();
   User get currentUser => _currentUser;
 
+  String get usernameDB => Boxes.userDataBase.values.first.username;
+  String get passwordDB => Boxes.userDataBase.values.first.password;
+
   bool get isAnonymousUser => _currentUser.nombre.isEmpty && _currentUser.apellido.isEmpty;
   String userNickname() {
     if (!isAnonymousUser) {
@@ -22,9 +26,14 @@ class UserProvider extends ChangeNotifier {
     return "";
   }
 
-  void setCurrentUser({required String username, required String password}) {
+  Future<void> setCurrentUser({required String username, required String password}) async {
     _currentUser = usersAllowLoggin.firstWhere((user) => user.username == username && user.password == password);
+    await Boxes.currentUser(_currentUser);
     notifyListeners();
+  }
+
+  Future<void> deletedUser() async {
+    await Boxes.deletedUser();
   }
 
   void setAnonymousUser() {

@@ -1,3 +1,5 @@
+export 'package:verifarma/presentation/home/widgets/custom_fab.dart';
+
 export 'package:verifarma/presentation/home/widgets/custom_container.dart';
 
 export 'package:verifarma/presentation/home/widgets/icons.dart';
