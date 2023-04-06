@@ -46,7 +46,10 @@ class VideoAdapter extends TypeAdapter<Video> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is VideoAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
+      identical(this, other) ||
+      other is VideoAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class StarAdapter extends TypeAdapter<Star> {
@@ -60,7 +63,7 @@ class StarAdapter extends TypeAdapter<Star> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Star(
-      id: 0,
+      id: fields[2] as int,
       starValue: fields[1] as int,
     );
   }
@@ -68,7 +71,9 @@ class StarAdapter extends TypeAdapter<Star> {
   @override
   void write(BinaryWriter writer, Star obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(2)
+      ..writeByte(2)
+      ..write(obj.id)
       ..writeByte(1)
       ..write(obj.starValue);
   }
@@ -78,5 +83,8 @@ class StarAdapter extends TypeAdapter<Star> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is StarAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
+      identical(this, other) ||
+      other is StarAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

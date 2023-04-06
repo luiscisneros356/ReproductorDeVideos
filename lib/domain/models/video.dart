@@ -90,7 +90,7 @@ class Star {
     required this.id,
     required this.starValue,
   });
-
+  @HiveField(2)
   final int id;
   @HiveField(1)
   final int starValue;
