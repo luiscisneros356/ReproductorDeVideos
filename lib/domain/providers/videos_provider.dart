@@ -26,6 +26,11 @@ class VideosProvider extends ChangeNotifier {
     Boxes.addNewVideo(video);
   }
 
+  void removeNewvideos() {
+    _listNewVideos.clear();
+    notifyListeners();
+  }
+
   Video _selectedVideo = Video.empty();
   Video get selectedVideo => _selectedVideo;
 

@@ -83,6 +83,7 @@ class _VideoListState extends State<VideoList> {
                   onPressedNo: () => Navigator.pop(context),
                   onPressedSI: () {
                     Navigator.pushReplacementNamed(context, RoutesApp.auth);
+                    provider.removeNewvideos();
                   },
                 );
               },
@@ -94,6 +95,7 @@ class _VideoListState extends State<VideoList> {
             onPressed: () {
               userProvider.deletedUser();
               Navigator.pushReplacementNamed(context, RoutesApp.auth);
+              provider.removeNewvideos();
             },
           ),
           const SizedBox(height: 24),
