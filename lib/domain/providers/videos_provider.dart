@@ -26,8 +26,11 @@ class VideosProvider extends ChangeNotifier {
     Boxes.addNewVideo(video);
   }
 
-  void removeNewvideos() {
+  void cleanData() {
     _listNewVideos.clear();
+    _recomendedVideos.clear();
+    _listNewVideos.clear();
+
     notifyListeners();
   }
 
