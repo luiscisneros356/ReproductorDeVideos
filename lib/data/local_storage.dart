@@ -2,7 +2,6 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:hive/hive.dart';
 import 'package:verifarma/domain/models/models.dart';
-import 'dart:developer' as dev;
 
 class Boxes {
   static const videoBox = "video";
@@ -25,8 +24,6 @@ class Boxes {
 
   static Future<void> addNewVideo(Video video) async {
     await videosDataBase.add(video);
-
-    dev.log("${videosDataBase.values.length}");
   }
 
   static Future<void> raitingVideo(Video video) async {

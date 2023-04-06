@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:verifarma/data/local_storage.dart';
 
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'dart:developer' as dev;
 
 import '../impl/impl.dart';
 import '../models/models.dart';
@@ -53,8 +52,6 @@ class VideosProvider extends ChangeNotifier {
     _selectedVideo = video;
 
     if (rate) {
-      dev.log("${_selectedVideo.rating} ");
-
       _selectedVideo.stars.add(Star(id: 0, starValue: _selectedVideo.currenteRankingPoint));
 
       if (Boxes.videosDataBase.values.contains(_selectedVideo)) {
@@ -66,8 +63,6 @@ class VideosProvider extends ChangeNotifier {
       } else {
         Boxes.addNewVideo(_selectedVideo);
       }
-
-      dev.log("${_selectedVideo.rating} ");
 
       if (showRecomendation) {
         recomended();
@@ -90,9 +85,9 @@ class VideosProvider extends ChangeNotifier {
 
   Future<List<Video>> fetchVideos() async {
     final templistVideos = await _videoRepositoryImpl.getVideos();
-    dev.log("${_listVideos.length}");
+
     _listVideos.addAll(templistVideos);
-    dev.log("${_listVideos.length}");
+
     if (Boxes.videosDataBase.isNotEmpty) {
       _listVideos.addAll(Boxes.videosDataBase.values.toList());
       _listVideos = _listVideos.reversed.toList();
@@ -102,7 +97,6 @@ class VideosProvider extends ChangeNotifier {
       _listVideos.addAll(_listNewVideos);
       _listVideos = _listVideos.reversed.toList();
     }
-    dev.log("${_listVideos.length}");
 
     for (var video in _listVideos) {
       video.controller = YoutubePlayerController(

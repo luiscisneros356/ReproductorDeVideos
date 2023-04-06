@@ -45,10 +45,6 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     }
   }
 
-  Future<void> goTo(String route) async {
-    Navigator.pushReplacementNamed(context, route);
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
