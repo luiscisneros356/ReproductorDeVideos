@@ -82,8 +82,8 @@ class _VideoListState extends State<VideoList> {
                   text: "Como usuario podrás subir videos",
                   onPressedNo: () => Navigator.pop(context),
                   onPressedSI: () {
-                    Navigator.pushReplacementNamed(context, RoutesApp.auth);
                     provider.removeNewvideos();
+                    Navigator.pushReplacementNamed(context, RoutesApp.auth);
                   },
                 );
               },
@@ -94,8 +94,9 @@ class _VideoListState extends State<VideoList> {
             text: "Cerrar sesión",
             onPressed: () {
               userProvider.deletedUser();
-              Navigator.pushReplacementNamed(context, RoutesApp.auth);
               provider.removeNewvideos();
+
+              Navigator.pushReplacementNamed(context, RoutesApp.splash);
             },
           ),
           const SizedBox(height: 24),

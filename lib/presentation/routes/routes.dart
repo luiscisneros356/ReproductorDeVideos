@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../auth/auth_screen.dart';
 import '../home/widgets/video_list.dart';
+import '../splash/splash_screen.dart';
 
 class RoutesApp {
   static const String home = "/home";
@@ -12,7 +13,7 @@ class RoutesApp {
     return {
       RoutesApp.home: (context) => const VideoList(),
       RoutesApp.auth: (context) => const AuthScreen(),
-      // RoutesApp.splash: (context) => const Splash()
+      RoutesApp.splash: (context) => const Splash()
     };
   }
 }
