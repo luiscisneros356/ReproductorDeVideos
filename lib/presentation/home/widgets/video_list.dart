@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:verifarma/presentation/home/widgets/dialogs.dart';
 import 'package:verifarma/presentation/routes/routes.dart';
+import 'package:verifarma/presentation/utils/text_style.dart';
 
 import 'dart:developer' as dev;
 
@@ -27,12 +28,20 @@ class _VideoListState extends State<VideoList> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    _controller.removeListener(_listener);
+    super.dispose();
+  }
+
   _listener() {
     final position = _controller.position;
     final maxScrollExtent = position.maxScrollExtent;
     final pixel = position.pixels + 40;
     if (pixel >= maxScrollExtent) {
       Provider.of<VideosProvider>(context, listen: false).fetchVideos();
+
       setState(() {});
     }
   }
@@ -68,7 +77,7 @@ class _VideoListState extends State<VideoList> {
               final videos = snapshot.data;
               return ListViewVideos(controller: _controller, listVideos: videos!);
             }
-            return const SizedBox();
+            return Center(child: Text("En este momento hay un error, intent más tarde", style: VioFarmaStyle.title()));
           }),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,

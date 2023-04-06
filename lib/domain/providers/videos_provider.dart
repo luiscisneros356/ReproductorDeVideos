@@ -90,9 +90,9 @@ class VideosProvider extends ChangeNotifier {
 
   Future<List<Video>> fetchVideos() async {
     final templistVideos = await _videoRepositoryImpl.getVideos();
-
+    dev.log("${_listVideos.length}");
     _listVideos.addAll(templistVideos);
-
+    dev.log("${_listVideos.length}");
     if (Boxes.videosDataBase.isNotEmpty) {
       _listVideos.addAll(Boxes.videosDataBase.values.toList());
       _listVideos = _listVideos.reversed.toList();
@@ -102,6 +102,7 @@ class VideosProvider extends ChangeNotifier {
       _listVideos.addAll(_listNewVideos);
       _listVideos = _listVideos.reversed.toList();
     }
+    dev.log("${_listVideos.length}");
 
     for (var video in _listVideos) {
       video.controller = YoutubePlayerController(

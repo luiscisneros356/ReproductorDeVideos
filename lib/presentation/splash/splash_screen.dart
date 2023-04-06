@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,12 +13,15 @@ class Splash extends StatefulWidget {
   State<Splash> createState() => _SplashState();
 }
 
-class _SplashState extends State<Splash> {
+class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
   @override
   void initState() {
-    WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      nav();
-    });
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 2))..forward();
+    _animation = Tween<double>(begin: 0, end: pi * 2).animate(_controller);
+    nav();
 
     super.initState();
   }
@@ -25,11 +30,11 @@ class _SplashState extends State<Splash> {
     await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
+//Eror:
 // Unhandled Exception: Concurrent modification during iteration: Instance(length:5) of '_GrowableList'.
       if (userProvider.hasSessionActiveDB) {
-        userProvider.checkUser();
-
-        Navigator.pushReplacementNamed(context, RoutesApp.home);
+        await userProvider.checkUser();
+        if (mounted) Navigator.pushReplacementNamed(context, RoutesApp.home);
       } else {
         Navigator.pushReplacementNamed(context, RoutesApp.auth);
       }
@@ -42,6 +47,9 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset("assets/splash.png");
+    return AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) =>
+            Transform.rotate(angle: _animation.value, child: Image.asset("assets/splash.png")));
   }
 }
