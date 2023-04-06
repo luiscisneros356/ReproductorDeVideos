@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:verifarma/presentation/routes/routes.dart';
-import 'package:verifarma/presentation/splash/splash_screen.dart';
 
 import 'auth/auth_screen.dart';
 
@@ -23,6 +22,6 @@ class VerifarmaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Splash();
+    return const AuthScreen();
   }
 }

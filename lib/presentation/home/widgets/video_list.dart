@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:verifarma/presentation/home/widgets/dialogs.dart';
 import 'package:verifarma/presentation/routes/routes.dart';
 
 import 'dart:developer' as dev;
 
 import '../../../domain/models/models.dart';
 import '../../../domain/providers/providers.dart';
-import '../../utils/utils.dart';
+
 import 'widgets.dart';
 
 class VideoList extends StatefulWidget {
@@ -69,34 +70,47 @@ class _VideoListState extends State<VideoList> {
             }
             return const SizedBox();
           }),
-      floatingActionButton: Visibility(
-        visible: !userProvider.isAnonymousUser,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            CustomFAB(
-              icon: Icons.close_rounded,
-              text: "Cerrar sesión",
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          CustomFAB(
+              icon: Icons.enhance_photo_translate,
+              text: "Ingresá\ncomo usuario",
               onPressed: () {
-                userProvider.deletedUser();
-                Navigator.pushReplacementNamed(context, RoutesApp.splash);
+                showCustomDialog(
+                  context,
+                  text: "Como usuario podrás subir videos",
+                  onPressedNo: () => Navigator.pop(context),
+                  onPressedSI: () {
+                    Navigator.pushReplacementNamed(context, RoutesApp.auth);
+                  },
+                );
               },
-            ),
-            const SizedBox(height: 24),
-            CustomFAB(
-                icon: Icons.video_call,
-                text: "Subir video",
-                onPressed: () async {
-                  final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
+              visible: userProvider.isAnonymousUser),
+          CustomFAB(
+            visible: !userProvider.isAnonymousUser,
+            icon: Icons.close_rounded,
+            text: "Cerrar sesión",
+            onPressed: () {
+              userProvider.deletedUser();
+              Navigator.pushReplacementNamed(context, RoutesApp.auth);
+            },
+          ),
+          const SizedBox(height: 24),
+          CustomFAB(
+              visible: !userProvider.isAnonymousUser,
+              icon: Icons.video_call,
+              text: "Subir video",
+              onPressed: () async {
+                final video = await showDialog<Video>(context: context, builder: (context) => const SubmitVideo());
 
-                  if (video != null) {
-                    provider.setAddNewVideo(video);
-                    dev.log("${provider.listNewVideos.length} ");
-                    setState(() {});
-                  }
-                })
-          ],
-        ),
+                if (video != null) {
+                  provider.setAddNewVideo(video);
+                  dev.log("${provider.listNewVideos.length} ");
+                  setState(() {});
+                }
+              })
+        ],
       ),
     );
   }

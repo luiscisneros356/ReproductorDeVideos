@@ -17,6 +17,7 @@ class UserProvider extends ChangeNotifier {
 
   String get usernameDB => Boxes.userDataBase.values.first.username;
   String get passwordDB => Boxes.userDataBase.values.first.password;
+  bool get hasSessionActiveDB => Boxes.userDataBase.values.isNotEmpty;
 
   bool get isAnonymousUser => _currentUser.nombre.isEmpty && _currentUser.apellido.isEmpty;
   String userNickname() {
@@ -66,5 +67,9 @@ class UserProvider extends ChangeNotifier {
       return "Contraseña incorreta";
     }
     return "No existe el usuario";
+  }
+
+  Future<void> checkUser() async {
+    fetchUsers().then((value) => setCurrentUser(username: usernameDB, password: passwordDB));
   }
 }

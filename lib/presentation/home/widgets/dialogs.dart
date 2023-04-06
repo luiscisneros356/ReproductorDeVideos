@@ -2,25 +2,27 @@ import 'package:flutter/material.dart';
 
 import '../../utils/text_style.dart';
 
-Future<void> showCustomDialog(BuildContext context) async {
+Future<void> showCustomDialog(
+  BuildContext context, {
+  required String text,
+  required VoidCallback onPressedNo,
+  required VoidCallback onPressedSI,
+}) async {
   await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
             title: Text(
-              "Deseas ver mas videos recomendados para a vos",
+              text,
               style: VioFarmaStyle.title(),
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: onPressedNo,
                 child: const Text("NO"),
               ),
               TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Scaffold.of(context).openDrawer();
-                },
+                onPressed: onPressedSI,
                 child: const Text("SI"),
               ),
             ],

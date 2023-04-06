@@ -4,7 +4,6 @@ import 'package:verifarma/presentation/routes/routes.dart';
 
 import '../../domain/providers/user_provider.dart';
 import '../home/widgets/custom_textfield.dart';
-import '../home/widgets/video_list.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});

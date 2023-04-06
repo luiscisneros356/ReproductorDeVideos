@@ -73,7 +73,15 @@ class _RatingScaleState extends State<RatingScale> {
                           provider.setVideo(widget.video, true);
 
                           if (provider.showRecomendation) {
-                            await showCustomDialog(context);
+                            await showCustomDialog(
+                              context,
+                              text: "Deseas ver más videos recomendados para a vos",
+                              onPressedNo: () => Navigator.pop(context),
+                              onPressedSI: () {
+                                Navigator.pop(context);
+                                Scaffold.of(context).openDrawer();
+                              },
+                            );
                           }
                           widget.video.currenteRankingPoint = 0;
                           setState(() {});
