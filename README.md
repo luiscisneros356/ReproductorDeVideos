@@ -1,16 +1,40 @@
-# verifarma
+# Descripción:
+ 
+ Esta app permite visualizar videos obtenidos de Youtube, subir sus propios videos y votar los mismos para establecer un rating. 
+ Además, permite conocer en función de los videos votados y la puntuación ingresada otros videos recomendados en relación a la temática de 
+ interés para ese usuario.
+ 
+ Existen 2 tipo de usarios: el que es considerado como tal, es decir, que tiene un username y password. Por el otro lado el que no tiene estas credenciales.
+ El primero puede acceder a la plataforma, ver el contenido de la misma, votar  y subir videos, además de conocer los recomendados.
+ La diferencia con el segundo caso es que este no prodrá subir videos.
 
-A new Flutter project.
+Tanto el inicio de sesión como los videos subidos a la plataforma y los votados tienen persistencia local.
 
-## Getting Started
+# Packages:
+Provider para manejador de estado
 
-This project is a starting point for a Flutter application.
+Hive y Path Provider para persistencia de datos
 
-A few resources to get you started if this is your first Flutter project:
+Youtube Player para reproducir los videos
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+# Instalación:
+
+clone repository
+
+flutter pub get
+
+flutter pub run build_runner build --delete-conflicting-outputs
+
+run proyect
+
+
+
+
+# Imágenes
+
+![alt text](https://github.com/luiscisneros356/ReproductorDeVideos/blob/main/imagenes_git/home.png)
+![alt text](https://github.com/luiscisneros356/ReproductorDeVideos/blob/main/imagenes_git/recomended_video.png)
+![alt text](https://github.com/luiscisneros356/ReproductorDeVideos/blob/main/imagenes_git/update_video.png)
+![alt text]( https://github.com/luiscisneros356/ReproductorDeVideos/blob/main/imagenes_git/login.png)
