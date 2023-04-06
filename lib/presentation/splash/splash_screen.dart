@@ -30,8 +30,12 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     await Future.delayed(const Duration(seconds: 2));
     if (mounted) {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
-//Eror:
+
+//TODO Tengo este error que no lo pude solucionar cuando se cargar por primera vez el splash y cuando cierro sesión,
+//con F5 se saltea pero no tuve tiempo de revisarlo en datalle
+//
 // Unhandled Exception: Concurrent modification during iteration: Instance(length:5) of '_GrowableList'.
+
       if (userProvider.hasSessionActiveDB) {
         await userProvider.checkUser();
         if (mounted) Navigator.pushReplacementNamed(context, RoutesApp.home);
