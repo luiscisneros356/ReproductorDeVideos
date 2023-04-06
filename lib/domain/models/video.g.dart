@@ -63,7 +63,7 @@ class StarAdapter extends TypeAdapter<Star> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Star(
-      id: fields[2] as int,
+      id: fields[2] as int?,
       starValue: fields[1] as int,
     );
   }

@@ -91,7 +91,7 @@ class Star {
     required this.starValue,
   });
   @HiveField(2)
-  final int id;
+  int? id;
   @HiveField(1)
   final int starValue;
 
