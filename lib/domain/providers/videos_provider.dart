@@ -47,31 +47,19 @@ class VideosProvider extends ChangeNotifier {
     if (rate) {
       dev.log("${_selectedVideo.rating} ");
 
-      dev.log("${_selectedVideo.currenteRankingPoint} ");
-
       _selectedVideo.stars.add(Star(id: 0, starValue: _selectedVideo.currenteRankingPoint));
-
-//TODO ver aca
 
       if (Boxes.videosDataBase.values.contains(_selectedVideo)) {
         final videoInDataBase = Boxes.videosDataBase.values.firstWhere((video) => video.title == _selectedVideo.title);
 
-        dev.log("**********************************");
-        dev.log("${videoInDataBase.rating} ");
-
-        print(videoInDataBase.title);
-
         videoInDataBase.stars.add(Star(id: 0, starValue: _selectedVideo.currenteRankingPoint));
 
         Boxes.raitingVideo(videoInDataBase);
-
-        dev.log("${videoInDataBase.rating} ");
-        dev.log("**********************************");
+      } else {
+        Boxes.addNewVideo(_selectedVideo);
       }
 
       dev.log("${_selectedVideo.rating} ");
-
-      dev.log("${_selectedVideo.currenteRankingPoint} ");
 
       if (showRecomendation) {
         recomended();
@@ -100,7 +88,6 @@ class VideosProvider extends ChangeNotifier {
     if (Boxes.videosDataBase.isNotEmpty) {
       _listVideos.addAll(Boxes.videosDataBase.values.toList());
       _listVideos = _listVideos.reversed.toList();
-      dev.log("PASO POR ACA");
     }
 
     if (_listNewVideos.isNotEmpty) {

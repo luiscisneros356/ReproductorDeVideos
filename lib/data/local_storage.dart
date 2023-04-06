@@ -27,6 +27,5 @@ class Boxes {
 
   static Future<void> raitingVideo(Video video) async {
     video.save();
-    dev.log("${videosDataBase.values.length}");
   }
 }
