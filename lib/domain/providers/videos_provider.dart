@@ -29,7 +29,7 @@ class VideosProvider extends ChangeNotifier {
   void cleanData() {
     _listNewVideos.clear();
     _recomendedVideos.clear();
-    _listNewVideos.clear();
+    _listVideos.clear();
 
     notifyListeners();
   }
