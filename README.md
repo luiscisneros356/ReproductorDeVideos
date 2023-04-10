@@ -4,16 +4,16 @@
  Además, permite conocer en función de los videos votados y la puntuación ingresada otros videos recomendados en relación a la temática de 
  interés para ese usuario.
  
- Existen 2 tipo de usarios: el que es considerado como tal, es decir, que tiene un username y password (estos se encuentran en el path assets/user.json). Por el otro lado el que no tiene estas credenciales e ingresa como invitado.
+ Existen 2 tipos de usuarios: el que es considerado como tal, es decir, que tiene un username y password (estos se encuentran en el path assets/user.json). Por el otro lado, el que no tiene estas credenciales e ingresa como invitado.
  El primero puede acceder a la plataforma, ver el contenido de la misma, votar  y subir videos, además de conocer los recomendados.
  La diferencia con el segundo caso es que este no prodrá subir videos.
 
 Tanto el inicio de sesión como los videos subidos a la plataforma y los votados tienen persistencia local.
 
 # Packages:
-Provider para manejador de estado
+Provider como manejador de estado
 
-Hive y Path Provider para persistencia de datos
+Hive para persistencia de datos
 
 Youtube Player para reproducir los videos
 
