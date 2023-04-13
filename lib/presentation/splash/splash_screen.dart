@@ -21,7 +21,10 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   void initState() {
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 2))..forward();
     _animation = Tween<double>(begin: 0, end: pi * 2).animate(_controller);
-    nav();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      nav();
+    });
 
     super.initState();
   }
@@ -31,18 +34,18 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     if (mounted) {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-//TODO Tengo este error que no lo pude solucionar cuando se cargar por primera vez el splash y cuando cierro sesión,
-//con F5 se saltea pero no tuve tiempo de revisarlo en datalle
-//
-// Unhandled Exception: Concurrent modification during iteration: Instance(length:5) of '_GrowableList'.
-
       if (userProvider.hasSessionActiveDB) {
-        await userProvider.checkUser();
-        if (mounted) Navigator.pushReplacementNamed(context, RoutesApp.home);
+        await userProvider.checkUser().then((value) => Navigator.pushReplacementNamed(context, RoutesApp.home));
       } else {
         Navigator.pushReplacementNamed(context, RoutesApp.auth);
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

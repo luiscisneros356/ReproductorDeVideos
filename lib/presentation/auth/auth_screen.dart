@@ -20,12 +20,15 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) async {
-      if (mounted) {
-        Provider.of<UserProvider>(context, listen: false).fetchUsers();
-      }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      init();
     });
+
     super.initState();
+  }
+
+  Future<void> init() async {
+    Provider.of<UserProvider>(context, listen: false).fetchUsers();
   }
 
   @override

@@ -90,9 +90,9 @@ class _VideoListState extends State<VideoList> {
                   context,
                   text: "Como usuario podrás subir videos",
                   onPressedNo: () => Navigator.pop(context),
-                  onPressedSI: () {
+                  onPressedSI: () async {
                     provider.cleanData();
-                    Navigator.pushReplacementNamed(context, RoutesApp.auth);
+                    await Navigator.pushReplacementNamed(context, RoutesApp.auth);
                   },
                 );
               },
@@ -101,11 +101,11 @@ class _VideoListState extends State<VideoList> {
             visible: !userProvider.isAnonymousUser,
             icon: Icons.close_rounded,
             text: "Cerrar sesión",
-            onPressed: () {
+            onPressed: () async {
               userProvider.deletedUser();
               provider.cleanData();
 
-              Navigator.pushReplacementNamed(context, RoutesApp.splash);
+              await Navigator.pushReplacementNamed(context, RoutesApp.splash);
             },
           ),
           const SizedBox(height: 24),
